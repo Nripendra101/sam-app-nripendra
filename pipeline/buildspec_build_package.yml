@@ -10,18 +10,14 @@ phases:
       
   build:
     commands:
-      - sam build --use-container --template ${SAM_TEMPLATE}
-      - . ./assume-role.sh ${TESTING_PIPELINE_EXECUTION_ROLE} test-package
-      - sam package --s3-bucket ${TESTING_ARTIFACT_BUCKET}
-                    --region ${TESTING_REGION}
+      - sam build --use-container --template template.yaml
+      - . ./assume-role.sh "arn:aws:iam::632178947285:role/aws-sam-cli-managed-dev-pipel-PipelineExecutionRole-ozbWnHlFcrvu" test-package
+      - sam package --s3-bucket aws-sam-cli-managed-dev-pipeline-r-artifactsbucket-zaatxq65ywz9
+                    --region us-east-2
                     --output-template-file packaged-test.yaml
-      - . ./assume-role.sh ${PROD_PIPELINE_EXECUTION_ROLE} prod-package
-      - sam package --s3-bucket ${PROD_ARTIFACT_BUCKET}
-                    --region ${PROD_REGION}
-                    --output-template-file packaged-prod.yaml
+      
 artifacts:
   files:
     - packaged-test.yaml
-    - packaged-prod.yaml
     - assume-role.sh
     - pipeline/*
